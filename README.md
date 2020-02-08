@@ -9,6 +9,23 @@ Over the years Netflix have open-sourced a number of tools (that they continue t
 # The Project
 Let’s imagine a simple online store scenario, where customers can place orders. We can already identify some services that we’ll need - a customer service and an order service. We’ll take it step by step to build out each one.[1]
 
+# Service Discovery
+A microservice architecture can be incredibly dynamic. Services don’t necessarily have fixed addresses, known ahead of time. They can be moved around onto different ports, machines and even different data centres entirely. More often than not, there will be many instances of a given service - a number that is rarely constant as new instances are often introduced to meet demand and are removed when demand decreases. They also need to discover other services in order to communicate with them.[1] *(Bir mikroservis mimarisi inanılmaz derecede dinamik olabilir. Servislerin önceden bilinen sabit adresleri olması gerekmez. Bunlar tamamen farklı portlarda, makinelere ve hatta farklı veri merkezlerine taşınabilir. Sık olmamakla birlikte, belirli bir servisin birçok instance'ı olacaktır.Instance adedi nadiren sabit olan bir sayıdır.Çünkü talebi karşılamak için genellikle yeni instance'lar getirilir ve talep azaldığında bu instance'lar kaldırılır Ayrıca onlarla iletişim kurmak için başka hizmetleri de keşfetmeleri gerekir.)*
+
+Netflix’s Eureka is a service discovery tool, designed to solve this problem. When a service starts up, it registers itself with Eureka, specifying its name, address and other relevant information. It regularly sends heartbeat messages to Eureka to communicate that it’s still alive and able to handle requests. If that heartbeat stops for any reason, Eureka will de-register that particular service after a configured timeout. Services can also request registry information from Eureka in order to discover other services.[1] *(Netflix’in Eureka, bu sorunu çözmek için tasarlanmış bir servis keşif aracıdır. Bir servis başladığında, adını, adresini ve diğer ilgili bilgileri belirterek Eureka'ya kaydolur. Eureka'ya, hala hayatta olduğunu ve istekleri yerine getirebildiğini bildirmek için düzenli olarak heartbeat mesajları gönderir. Bu heartbeat herhangi bir nedenle durursa, Eureka konfigure edilmiş bir zaman aşımından sonra söz konusu servisin kaydını silecektir. Servisler, diğer servisleri keşfetmek için Eureka'dan kayıt defteri bilgileri de isteyebilir)*
+
+
+![Alt text](eureka-diagram.jpg?raw=true "Title")
+
+
+
+
+
+
+
+
+
+
 
 
 
