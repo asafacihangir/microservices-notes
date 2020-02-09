@@ -15,7 +15,7 @@ A microservice architecture can be incredibly dynamic. Services don’t necessar
 Netflix’s Eureka is a service discovery tool, designed to solve this problem. When a service starts up, it registers itself with Eureka, specifying its name, address and other relevant information. It regularly sends heartbeat messages to Eureka to communicate that it’s still alive and able to handle requests. If that heartbeat stops for any reason, Eureka will de-register that particular service after a configured timeout. Services can also request registry information from Eureka in order to discover other services.[1] *(Netflix’in Eureka, bu sorunu çözmek için tasarlanmış bir servis keşif aracıdır. Bir servis başladığında, adını, adresini ve diğer ilgili bilgileri belirterek Eureka'ya kaydolur. Eureka'ya, hala hayatta olduğunu ve istekleri yerine getirebildiğini bildirmek için düzenli olarak heartbeat mesajları gönderir. Bu heartbeat herhangi bir nedenle durursa, Eureka konfigure edilmiş bir zaman aşımından sonra söz konusu servisin kaydını silecektir. Servisler, diğer servisleri keşfetmek için Eureka'dan kayıt defteri bilgileri de isteyebilir)*
 
 
-![Alt text](eureka-diagram.jpg?raw=true "Title")
+![Alt text](images/eureka-diagram.jpg?raw=true "Title")
 
 
 
