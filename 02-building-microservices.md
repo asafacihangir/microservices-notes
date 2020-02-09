@@ -47,26 +47,83 @@ Calls to external systems are wrapped in commands, which are typically run in se
 ![Alt text](images/hystrix-diagram.png?raw=true "Title")
 
 
+Feign also includes support for Hystrix although it is not enabled by default. When Hystrix is on the classpath and explicitly enabled in the configuration, Spring Cloud OpenFeign automatically configures and integrates it with Feign clients.
+
+Let’s add Hystrix support and create a fallback to our Customer Service’s OrderClient to allow the getOrdersForCustomer method to gracefully degrade when the Order Service fails.
+
+First, we’ll add Spring Cloud Hystrix as a dependency. Insert the following to the dependencies block of your Customer Service’s build.gradle file:
+```
+implementation 'org.springframework.cloud:spring-cloud-starter-netflix-hystrix'
+```
+We’ll then configure Spring Cloud OpenFeign to enable Hystrix support. In application.properties, add:
+
+```
+feign.hystrix.enabled=true
+```
+
+At this point, Hystrix will be used by the Feign client. By default it allows the remote Order Service up to 1 second to respond before it steps in and cancels the request.
 
 
+Let’s add a fallback mechanism to the OrderClient, which Hystrix will call when the request fails. First, create a @Component class which implements our OrderClient interface and provides fallback behaviour for the getOrdersForCustomer method. In this case, we’ll just return an empty list:
 
 
+```
+package com.github.jrhenderson1988.customerservice;
+
+import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+
+@Component
+public class OrderClientFallback implements OrderClient {
+    @Override
+    public Object getOrdersForCustomer(int customerId) {
+        return Collections.emptyList();
+    }
+}
+```
+
+Now, we need to configure our Feign client to point to the fallback implementation. In the OrderClient class, modify the @FeignClient annotation to add a fallback which points to our OrderClientFallback class:
+
+```
+package com.github.jrhenderson1988.customerservice;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@FeignClient(name = "order-service", fallback = OrderClientFallback.class)
+public interface OrderClient {
+    @GetMapping("/")
+    Object getOrdersForCustomer(@RequestParam int customerId);
+}
+```
+
+The Gateway Service also uses Hystrix by default and cancels requests after 1 second, which results in it timing out and returning an error response before the Customer Service has the opportunity to execute its fallback mechanism and respond. To avoid this, we’ll increase the Gateway’s timeout settings to allow our downstream Customer Service enough time to respond after its 1 second timeout has expired.
+
+Add the following lines to the Gateway Service’s application.properties file:
 
 
+```
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=5000
+ribbon.ConnectTimeout=4000
+ribbon.ReadTimeout=4000
+```
 
+Launch the Discovery Service, followed by the Customer, Order and Gateway services (./gradlew bootRun). Once you’ve waited for everything to boot up and propagate, send a request to http://localhost/customers/2/orders to confirm that everything is working and you see the correct response.
 
+Now, let’s simulate a failure by killing the Order Service instance and trying the same endpoint again. This time, instead of seeing all of Jane Doe’s orders, you should see an empty list, which is what we defined in our fallback.
 
-
-
-
-
-
-
-
-
-
-
-
+# Summary
+- Upon receiving a GET request to the path /customers/{id}/orders, our Gateway service proxies it to the Customer Service.
+- The Customer Service uses a Feign client to send a request to the Order Service to handle the request.
+- The Feign client looks up the physical addresses of available Order Service instances in its local registry.
+- It uses Ribbon to decide which instance of should receive the request.
+- The request is sent to the chosen instance using a Hystrix command to handle timeouts or failure.
+- If the Hystrix circuit-breaker is open, the request is immediately cancelled and our fallback method is called.
+- If an issue is detected when calling the Order Service (or it times out), Hystrix reports the failure and calls our configured fallback method.
+- Upon receiving the request, the chosen Order Service instance does its work and sends back a response.
+- The Customer Service receives the response (or result of the calling the fallback method) and sends its own response back to the Gateway (and back to the client).
 
 # References
 1. ^Jonathon Henderson, 19 November 2019, https://blog.scottlogic.com/2019/11/19/building-microservices-with-spring-boot-2.html
