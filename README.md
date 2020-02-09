@@ -37,7 +37,7 @@ server.port=3000
 eureka.client.registerWithEureka=false
 eureka.client.fetchRegistry=false
 eureka.instance.hostname=localhost
-eureka.client.serviceUrl.defaultZone=http://${eureka.instance.hostname}:${server.port}/eur ka/
+eureka.client.serviceUrl.defaultZone=http://${eureka.instance.hostname}:${server.port}/eureka/
 ```
 
 Build and run the service (./gradlew bootRun) and confirm that it works by visiting http://localhost:3000. You should see a Eureka dashboard which displays information about the running instance:
