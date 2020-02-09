@@ -115,10 +115,10 @@ We’ve given the project a name of gateway-service, set it to run on port 80 (w
 
 Let’s run through what currently happens in our system:
 
-- The Discovery Service must be started first. When it loads it sits idle, waiting for incoming connections.
-- Upon starting up, the other services talk to the Discovery Service to register themselves and schedule a regular heartbeat to be sent. They also regularly request the registry information from the Discovery Service, which responds with the details of all of the registered services.
-- When a request is sent to the Gateway Service, it checks its mapped routes for a match. If it finds one, it looks up the name of the target service in its local registry that it retrieved from the Discovery Service, to work out the physical address of the target service and then proxies the incoming request to it.
-- The target service handles the incoming request and responds back to the Gateway Service which then responds back to the client.[1]
+- **The Discovery Service** must be started first. When it loads it sits idle, waiting for incoming connections.
+- Upon starting up, the other services talk to the **Discovery Service** to register themselves and schedule a regular heartbeat to be sent. They also regularly request the registry information from the **Discovery Service**, which responds with the details of all of the registered services.
+- When a request is sent to the **Gateway Service**, it checks its mapped routes for a match. If it finds one, it looks up the name of the target service in its local registry that it retrieved from the **Discovery Service**, to work out the physical address of the target service and then proxies the incoming request to it.
+- The target service handles the incoming request and responds back to the **Gateway Service** which then responds back to the client.[1]
 
 
 # References
