@@ -4,6 +4,8 @@ Contrary to a more traditional, monolithic approach where a single database is u
 
 There are many different approaches to inter-service communication, each suited for different scenarios. In this tutorial however, we’ll focus on synchronous HTTP.[1]
 
+*Code Url:* https://github.com/asafacihangir/building-microservices-with-spring-boot/tree/part-2 
+
 # HTTP Clients with Feign
 Making HTTP requests in Java and Spring isn’t too difficult. Java 9 introduced an incubating HttpClient, which was standardised in Java 11 and there are also a number of well known, open-source HTTP clients available, such as OkHttp, Apache HttpClient and Spring’s RestTemplate.[1]
 
