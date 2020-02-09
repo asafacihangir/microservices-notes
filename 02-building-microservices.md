@@ -33,6 +33,19 @@ The Feign client uses Ribbon to balance requests between instances of our Order 
 
 By default, our Gateway Service, set up as a Zuul proxy, also uses Ribbon to balance requests between our services. Make a GET request to http://localhost/orders, taking note of the port again.
 
+# Resiliency(Esneklik)
+Like all software, microservices can fail for all kinds of reasons - bugs, overloading and hardware/network failures to name just a few.[1]*( Tüm yazılımlarda olduğu gibi, mikroservisler de herhangi bir nedenden dolayı başarısız olabilir - hatalar, aşırı yükleme ve donanım / ağ hataları bunlardan sadece birkaçıdır.)*
+
+Distributed architectures depend on the ability of many interconnected services to communicate with one another over a network. Gracefully handling inevitable failures is therefore crucial - failing to do so can lead to cascading failures, where one small problem can trigger problems in other services, causing a ripple effect that can eventually bring down an entire.[1] *(Dağıtılmış mimariler, birbirine bağlı birçok hizmetin bir ağ üzerinden birbirleriyle iletişim kurma yeteneğine bağlıdır. Bu nedenle, kaçınılmaz başarısızlıkların zarif bir şekilde ele alınması çok önemlidir.Eğer bu hatalar ile başedilmezse, küçük bir sorunun diğer hizmetlerde sorunları tetikleyebilir vw Tüm servisleri düşürebilecek bir dalgalanma etkisine neden olabilecek basamaklı arızalara yol açabilir.)*
+
+# Latency and Fault Tolerance with Hystrix
+
+Hystrix is a fault and latency tolerance library, written by Netflix which provides developers with fine-grained control over inter-service (or 3rd party) communication. It helps to increase a system’s overall resiliency by preventing cascading failures and allowing engineers to add fallback mechanisms to promote graceful degredation.[1]*(Hystrix, Netflix tarafından yazılan, geliştiricilere servisler arası (veya 3. taraf) iletişim üzerinde ayrıntılı kontrol sağlayan bir hata ve gecikme tolerans kütüphanesidir. Basamaklı arızaları önleyerek ve zarif bozulmayı iyileştirmek için mühendislere için geri dönüş mekanizmaları eklemelerine izin vererek sistemin genel esnekliğini artırmaya yardımcı olur.)*
+
+Calls to external systems are wrapped in commands, which are typically run in separate threads. Hystrix oversees execution, timing out calls that run over configured thresholds and detects errors/exceptions. Failure rates are monitored and when a defined limit is exceeded, a circuit-breaker is tripped, halting the flow of traffic to allow the overwhelmed or failing service an opportunity to recover.[1]
+
+![Alt text](images/hystrix-diagram.svg?raw=true "Title")
+
 
 
 
