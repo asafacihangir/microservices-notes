@@ -79,7 +79,7 @@ Netflix’s Zuul (a reference to the Gatekeeper of Gozer in Ghostbusters) is a J
 Zuul also supports filters which allows developers to intercept requests before they are sent to services (Pre-filters) and responses before being sent back to clients (Post-filters). This enables developers to implement functionality that is common to all services, running either before or after requests are handled. Filters are often used for features such as authentication, load shedding and CORS management, to name just a few.[1]
 
 
-![Alt text](images/images/zuul-diagram.jpg?raw=true "Title")
+![Alt text](images/zuul-diagram.jpg?raw=true "Title")
 
 
 # Code Explantion Gateway Service
