@@ -24,7 +24,7 @@ Boot the Discovery, Customer and Gateway services as normal. Then we’ll launch
 ```
 Wait a couple of minutes for everything to register with the Discovery Service and for the updated registries to be propagated. Take a look at the Eureka dashboard - under Instances currently registered with Eureka you should see multiple instances of the Order Service:
 
-![Alt text](images/instances-currenty-registered-with-eureka1.jpg?raw=true "Title")
+![Alt text](images/instances-registered-with-eureka1.jpg?raw=true "Title")
 
 
 Make a few GET requests to http://localhost/customers/2/orders and take note of the port in the response. It should change each time.
