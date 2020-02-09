@@ -67,7 +67,7 @@ At this point, Hystrix will be used by the Feign client. By default it allows th
 Let’s add a fallback mechanism to the OrderClient, which Hystrix will call when the request fails. First, create a @Component class which implements our OrderClient interface and provides fallback behaviour for the getOrdersForCustomer method. In this case, we’ll just return an empty list:
 
 
-```
+```java
 package com.github.jrhenderson1988.customerservice;
 
 import org.springframework.stereotype.Component;
@@ -85,7 +85,7 @@ public class OrderClientFallback implements OrderClient {
 
 Now, we need to configure our Feign client to point to the fallback implementation. In the OrderClient class, modify the @FeignClient annotation to add a fallback which points to our OrderClientFallback class:
 
-```
+```java
 package com.github.jrhenderson1988.customerservice;
 
 import org.springframework.cloud.openfeign.FeignClient;
