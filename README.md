@@ -18,7 +18,56 @@ Netflix’s Eureka is a service discovery tool, designed to solve this problem. 
 ![Alt text](images/eureka-diagram.jpg?raw=true "Title")
 
 
+# Code Explanation-Discovery Service
+Open up the DiscoveryServiceApplication class and add the @EnableEurekaServer annotation, to stand up a Eureka service registry:
+```java
+@SpringBootApplication
+@EnableEurekaServer
+public class DiscoveryServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(DiscoveryServiceApplication.class, args);
+    }
+}
+```
+By default, a Eureka server communicates with peers to share their registry information in order to provide high availability, but since we’re just going to run a single instance here, let’s disable that feature and configure our service not to register with a peer and not to fetch a peer registry. We’ll also give it a name and a default port of 3000 (the default for Eureka is 8761). In application.properties add the following:
 
+```
+spring.application.name=discovery-service
+server.port=3000
+eureka.client.registerWithEureka=false
+eureka.client.fetchRegistry=false
+eureka.instance.hostname=localhost
+eureka.client.serviceUrl.defaultZone=http://${eureka.instance.hostname}:${server.port}/eur ka/
+```
+
+Build and run the service (./gradlew bootRun) and confirm that it works by visiting http://localhost:3000. You should see a Eureka dashboard which displays information about the running instance:
+
+![Alt text](images/euraka-dashboard-1.png?raw=true "Title")
+![Alt text](images/euraka-dashboard-2.png?raw=true "Title")
+
+
+
+Eureka dashboard'da, "Instances currently registered with Eureka" kısmında kaydolmuş servisleri görebiliriz.
+
+![Alt text](images/instances-currenty-registered-with-eureka?raw=true "Title")
+
+# Code Explanation-Registering with the Discovery Service
+Now our Discovery Service is up and running, our domain services must communicate with it to register themselves and to receive registry updates. To do this, we’ll need to add the Eureka Discovery Client dependency to our projects. 
+
+Now, let’s annotate our CustomerServiceApplication and OrderServiceApplication classes with the @EnableEurekaClient annotation:
+
+```java
+@SpringBootApplication
+@EnableEurekaClient
+public class CustomerServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(CustomerServiceApplication.class, args);
+    }
+}
+````
+
+Finally, let’s tell the Eureka Client where to find our Discovery Service. In each service’s application.properties, add the following line:
+```eureka.client.serviceUrl.defaultZone=http://localhost:3000/eureka/```
 
 
 
