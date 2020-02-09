@@ -49,7 +49,8 @@ Build and run the service (./gradlew bootRun) and confirm that it works by visit
 
 Eureka dashboard'da, "Instances currently registered with Eureka" kısmında kaydolmuş servisleri görebiliriz.
 
-![Alt text](images/instances-currenty-registered-with-eureka?raw=true "Title")
+![Alt text](images/instances-currenty-registered-with-eureka.png?raw=true "Title")
+
 
 # Code Explanation-Registering with the Discovery Service
 Now our Discovery Service is up and running, our domain services must communicate with it to register themselves and to receive registry updates. To do this, we’ll need to add the Eureka Discovery Client dependency to our projects. 
