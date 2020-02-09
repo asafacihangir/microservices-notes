@@ -70,15 +70,55 @@ public class CustomerServiceApplication {
 Finally, let’s tell the Eureka Client where to find our Discovery Service. In each service’s application.properties, add the following line:
 ```eureka.client.serviceUrl.defaultZone=http://localhost:3000/eureka/```
 
+# Routing and Server-Side Load Balancing with Zuul
+
+In a microservice architecture there can be tens, hundreds or even thousands of services. Many are private and internal, but some need to be exposed to the outside world. We need a single entry point into the system to allow us to wire up and expose selected services to the outside world.[1]
+
+Netflix’s Zuul (a reference to the Gatekeeper of Gozer in Ghostbusters) is a JVM based router and server-side load balancer. By mapping routes to services via its configuration, Zuul can integrate with Eureka to discover service locations to load balance and proxy requests to them.[1]
+
+Zuul also supports filters which allows developers to intercept requests before they are sent to services (Pre-filters) and responses before being sent back to clients (Post-filters). This enables developers to implement functionality that is common to all services, running either before or after requests are handled. Filters are often used for features such as authentication, load shedding and CORS management, to name just a few.[1]
 
 
+![Alt text](images/images/zuul-diagram.jpg?raw=true "Title")
 
 
+# Code Explantion Gateway Service
+Back at start.spring.io, create a new project with the Artifact gateway-service with Zuul and Eureka Discovery Client as dependencies. Once generated, open up the GatewayServiceApplication class and add the @EnableZuulProxy and @EnableEurekaClient annotations.[1]
 
+```java
+@SpringBootApplication
+@EnableZuulProxy
+@EnableEurekaClient
+public class GatewayServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(GatewayServiceApplication.class, args);
+    }
+}
+```
+Now add the following to application.properties:
 
+```
+spring.application.name=gateway-service
+server.port=80
+eureka.client.serviceUrl.defaultZone=http://localhost:3000/eureka/
 
+zuul.routes.customers.path=/customers/**
+zuul.routes.customers.serviceId=customer-service
 
+zuul.routes.orders.path=/orders/**
+zuul.routes.orders.serviceId=order-service
+```
 
+We’ve given the project a name of gateway-service, set it to run on port 80 (which is the default for HTTP) and told it to find our Discovery Service on port 3000. We’ve also added some route mappings so that requests to /customers/** and /orders/** will be forwarded to services named customer-service and order-service, respectively. Zuul uses the service registry provided by our Discovery Service to locate each target service.[1]
+
+# Summary
+
+Let’s run through what currently happens in our system:
+
+- The Discovery Service must be started first. When it loads it sits idle, waiting for incoming connections.
+- Upon starting up, the other services talk to the Discovery Service to register themselves and schedule a regular heartbeat to be sent. They also regularly request the registry information from the Discovery Service, which responds with the details of all of the registered services.
+- When a request is sent to the Gateway Service, it checks its mapped routes for a match. If it finds one, it looks up the name of the target service in its local registry that it retrieved from the Discovery Service, to work out the physical address of the target service and then proxies the incoming request to it.
+- The target service handles the incoming request and responds back to the Gateway Service which then responds back to the client.[1]
 
 
 # References
