@@ -44,7 +44,7 @@ Hystrix is a fault and latency tolerance library, written by Netflix which provi
 
 Calls to external systems are wrapped in commands, which are typically run in separate threads. Hystrix oversees execution, timing out calls that run over configured thresholds and detects errors/exceptions. Failure rates are monitored and when a defined limit is exceeded, a circuit-breaker is tripped, halting the flow of traffic to allow the overwhelmed or failing service an opportunity to recover.[1]
 
-![Alt text](images/hystrix-diagram.svg?raw=true "Title")
+![Alt text](images/hystrix-diagram.png?raw=true "Title")
 
 
 
