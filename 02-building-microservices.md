@@ -1,13 +1,13 @@
 # Inter-Service Communication
 
-Contrary to a more traditional, monolithic approach where a single database is usually available to all parts of an application, microservices run as distinct processes with their own private data stores and must communicate with one another to achieve their goals. This fundamental difference requires a different mindset and can be one of the biggest challenges facing developers when transitioning to building microservices.
+Contrary to a more traditional, monolithic approach where a single database is usually available to all parts of an application, microservices run as distinct processes with their own private data stores and must communicate with one another to achieve their goals. This fundamental difference requires a different mindset and can be one of the biggest challenges facing developers when transitioning to building microservices.[1]
 
-There are many different approaches to inter-service communication, each suited for different scenarios. In this tutorial however, we’ll focus on synchronous HTTP.
+There are many different approaches to inter-service communication, each suited for different scenarios. In this tutorial however, we’ll focus on synchronous HTTP.[1]
 
 # HTTP Clients with Feign
-Making HTTP requests in Java and Spring isn’t too difficult. Java 9 introduced an incubating HttpClient, which was standardised in Java 11 and there are also a number of well known, open-source HTTP clients available, such as OkHttp, Apache HttpClient and Spring’s RestTemplate.
+Making HTTP requests in Java and Spring isn’t too difficult. Java 9 introduced an incubating HttpClient, which was standardised in Java 11 and there are also a number of well known, open-source HTTP clients available, such as OkHttp, Apache HttpClient and Spring’s RestTemplate.[1]
 
-We could feasibly choose any of these options to manage communication between our services, but there are other problems to solve before we’d be able to do so. Since service addresses are dynamic and unknown ahead of time, we’d need to integrate with the local service registry to look them up before making requests. We’d also need to invest additional time implementing functions like (de)serialization, fault detection and load distribution.
+We could feasibly choose any of these options to manage communication between our services, but there are other problems to solve before we’d be able to do so. Since service addresses are dynamic and unknown ahead of time, we’d need to integrate with the local service registry to look them up before making requests. We’d also need to invest additional time implementing functions like (de)serialization, fault detection and load distribution.[1]
 
 **Feign** is a project, originally sponsored by Netflix which was designed to allow developers to declaratively build HTTP clients by means of creating annotated interfaces. It is highly customisable, and supports a significant number of integrations out of the box. Spring Cloud OpenFeign adds support for Feign by configuring and binding it to the Spring environment, integrating Spring MVC style annotations for building HTTP clients, and connecting it to the rest of the Spring Cloud ecosystem.
 
@@ -17,7 +17,7 @@ We could feasibly choose any of these options to manage communication between ou
 
 We’re already using Ribbon for client-side load balancing in our project since Spring Cloud OpenFeign (at the time of writing) uses Ribbon as its default load balancer.[1].*(Spring Cloud OpenFeign (yazma sırasında) varsayılan yük dengeleyici olarak Ribbon kullandığından, projemizde istemci tarafı yük dengelemesi için Ribbon'u zaten kullanıyoruz.)*
 
-Boot the Discovery, Customer and Gateway services as normal. Then we’ll launch multiple instances of the Order Service on different ports using the following command (replace <port> with a different number each time):
+Boot the Discovery, Customer and Gateway services as normal. Then we’ll launch multiple instances of the Order Service on different ports using the following command (replace <port> with a different number each time):[1]
 
 ```
 ./gradlew bootRun --args='--server.port=<port>
@@ -29,7 +29,7 @@ Wait a couple of minutes for everything to register with the Discovery Service a
 
 Make a few GET requests to http://localhost/customers/2/orders and take note of the port in the response. It should change each time.
 
-The Feign client uses Ribbon to balance requests between instances of our Order Service. Ribbon uses the local service registry, to find all of the physical addresses of the Order Service, and uses a pluggable load-balancing algorithm to determine which instance should receive the next request.
+The Feign client uses Ribbon to balance requests between instances of our Order Service. Ribbon uses the local service registry, to find all of the physical addresses of the Order Service, and uses a pluggable load-balancing algorithm to determine which instance should receive the next request.[1]
 
 By default, our Gateway Service, set up as a Zuul proxy, also uses Ribbon to balance requests between our services. Make a GET request to http://localhost/orders, taking note of the port again.
 
